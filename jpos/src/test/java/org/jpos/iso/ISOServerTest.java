@@ -25,6 +25,11 @@ import static org.junit.Assert.fail;
 import org.jpos.util.NameRegistrar;
 import org.junit.Test;
 
+
+import org.jpos.iso.*;
+import org.jpos.util.*;
+import org.jpos.iso.channel.*;
+import org.jpos.iso.packager.*;
 public class ISOServerTest {
 
     @Test
@@ -45,5 +50,16 @@ public class ISOServerTest {
         } catch (NameRegistrar.NotFoundException ex) {
             assertEquals("ex.getMessage()", "server.testISOServerName", ex.getMessage());
         }
+    }
+    @Test
+    public void testIsoServer() throws Throwable{
+        Logger logger = new Logger ();
+        logger.addListener (new SimpleLogListener (System.out));
+        ServerChannel channel = new XMLChannel (new XMLPackager());
+        ((LogSource)channel).setLogger (logger, "channel");
+        ISOServer server = new ISOServer (8000, channel, null);
+        server.setLogger (logger, "server");
+        new Thread (server).start ();
+
     }
 }
